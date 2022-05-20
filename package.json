@@ -4,9 +4,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build-mobile": "next build && next export && npx cap sync",
+    "run-mobile": "npx cap run ios && npx cap open android"
   },
   "dependencies": {
+    "@capacitor/android": "^3.5.1",
+    "@capacitor/cli": "^3.5.1",
+    "@capacitor/core": "^3.5.1",
+    "@capacitor/ios": "^3.5.1",
     "next": "12.1.4",
     "react": "18.0.0",
     "react-dom": "18.0.0",

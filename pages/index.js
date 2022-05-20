@@ -3,7 +3,7 @@ import useSWR from "swr";
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 export default function Home() {
-  const { data, error } = useSWR("/api/getuser", fetcher);
+  const { data, error } = useSWR("https://randomuser.me/api/?format=json", fetcher);
 
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
