@@ -1,13 +1,33 @@
 import useSWR from "swr";
+import React, { useState } from "react";
+import { Storage } from "@capacitor/storage";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 export default function Home() {
-  const { data, error } = useSWR("https://randomuser.me/api/?format=json", fetcher);
+  const checkName = async () => {
+    const { value } = await Storage.get({ key: "name" });
+    console.log(`Hello ${value}!`);
+    setNameStore(value);
+    return value;
+  };
+
+  const [nameStore, setNameStore] = useState("");
+
+  const { data, error } = useSWR(
+    "https://randomuser.me/api/?format=json",
+    fetcher
+  );
+
+  const setName = async (name) => {
+    await Storage.set({
+      key: "name",
+      value: name,
+    });
+  };
 
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
-  console.log(data);
   return (
     <div className="flex justify-center flex-col items-center">
       <img src="./qasid_logo.webp" className="w-32 m-4" />
@@ -41,6 +61,19 @@ export default function Home() {
           </figcaption>
         </div>
       </figure>
+      <button
+        className="h-10 px-6 font-semibold rounded-full bg-indigo-500 text-white m-2"
+        onClick={() => setName(data.results[0].name.first)}
+      >
+        Save Name
+      </button>
+      <button
+        className="h-10 px-6 font-semibold rounded-full bg-indigo-500 text-white"
+        onClick={() => checkName()}
+      >
+        Check Name
+      </button>
+      <div className="text-lg font-medium">{nameStore}</div>
     </div>
   );
 }

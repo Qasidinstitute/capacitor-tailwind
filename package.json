@@ -13,6 +13,7 @@
     "@capacitor/cli": "^3.5.1",
     "@capacitor/core": "^3.5.1",
     "@capacitor/ios": "^3.5.1",
+    "@capacitor/storage": "^1.2.5",
     "next": "12.1.4",
     "react": "18.0.0",
     "react-dom": "18.0.0",
