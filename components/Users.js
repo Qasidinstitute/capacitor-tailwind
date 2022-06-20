@@ -1,28 +1,34 @@
 import useSWR from "swr";
-import React, { useEffect, useState } from "react";
+import { request } from 'graphql-request';
 import * as Realm from "realm-web";
 import RealmContext from '../lib/RealmContext';
 import { generateAuthHeader } from '../lib/RealmClient';
 import { isAnon } from "../utils/anon";
 
+const fetcher = async ( query ) =>
+  fetch( process.env.NEXT_PUBLIC_REALM_GRAPHQL, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      'Authorization': await generateAuthHeader().then( data => { return data.Authorization } ),
+    },
+    body: JSON.stringify({ query })
+  }).then( data => { data.json() } ).catch( e => { console.log( e ) } );
+
+
+  const FIND_GRADES = `query {
+    programs(query: { sort: _id }) {
+    _id
+    }
+  }`
+
 function findPrograms() {
-  const fetch = async ( query ) =>
-    fetch( process.env.NEXT_PUBLIC_REALM_GRAPHQL, {
-      method: 'GET',
-      headers: await generateAuthHeader(),
-      body: JSON.stringify({ query }),
-    } ).then( ( res ) => res.json() );
 
-  const FIND_GRADES = `
-    query {
-      programs(query: { order: 2 }) {
-        _id
-      }
-    }`
+  const { data, error } = useSWR(FIND_GRADES, fetcher);
 
-  const { data, error } = useSWR( FIND_GRADES, fetch );
+  const token = async () => generateAuthHeader().then( res => { console.log( res ) } )
 
-  console.log(data)
+  console.log(token)
 
   return {
     programs: data,
@@ -32,11 +38,9 @@ function findPrograms() {
 }
 
 function Users ({realmContext: {app, user, setUser}}) {
-  const loggedIn = !isAnon(user);
+  const loggedIn = !isAnon( user );
 
   const { programs, isLoading, isError } = findPrograms();
-
-  console.log(programs)
 
   return (
     <div>
