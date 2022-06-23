@@ -16,7 +16,7 @@ export default function Home() {
       }
 
       if ( !client ) {
-        setClient( app.currentUser.mongoClient( 'mongodb-atlas' ) );
+        setClient( app.currentUser.mongoClient( 'mongodb-atlas' ).db("SIS") );
       }
     }
 

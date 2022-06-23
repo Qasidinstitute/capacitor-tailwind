@@ -1,47 +1,51 @@
+import { useContext, useEffect, useState } from 'react';
 import useSWR from "swr";
-import { request } from 'graphql-request';
 import * as Realm from "realm-web";
 import RealmContext from '../lib/RealmContext';
 import { generateAuthHeader } from '../lib/RealmClient';
 import { isAnon } from "../utils/anon";
 
-const FIND_GRADES = `query {
-  programs(query: { sort: _id }) {
-  _id
-  }
-}`
+const query = `
+    {
+      programs {
+        _id
+      }
+    }
+  `
 
-const fetcher = async () => fetch({
-  method: "POST",
-  headers: {
-    //contentType: 'application/json',
-    apiKey: "KX7quS1GK13d8M6TXFUihbIBK9kntDcvlQmKsglvoeLMVdQs9ZKAo8DOlfYC2ovZ"
-  },
-  body: { query: JSON.stringify(FIND_GRADES) },
-}).then( (res) => JSON.stringify(res) ).catch( (e) => console.log(JSON.stringify(e)) );
+const fetcher = async () => fetch(
+  process.env.NEXT_PUBLIC_REALM_GRAPHQL + '?query=' + encodeURIComponent(query), {
+    method: 'GET',
+    headers: {
+      contentType: 'application/json',
+      apiKey: "KX7quS1GK13d8M6TXFUihbIBK9kntDcvlQmKsglvoeLMVdQs9ZKAo8DOlfYC2ovZ",
+    },
+  }).then( res => res.json() );
 
-const findPrograms = async () => {
-  const { data, error } = useSWR( process.env.NEXT_PUBLIC_REALM_GRAPHQL, fetcher );
+function Users ({realmContext: {app, client, user}}) {
+  const loggedIn = !isAnon( user );
+  const [names, setNames] = useState( null );
+
+  const { data, error } = useSWR(
+      process.env.NEXT_PUBLIC_REALM_GRAPHQL,
+      fetcher
+    );
 
   console.log(data)
 
-  return {
-    programs: data,
-    isLoading: !error && !data,
-    isError: error
-  }
-}
-
-function Users ({realmContext: {app, user, setUser}}) {
-  const loggedIn = !isAnon( user );
-
-  const { programs, isLoading, isError } = findPrograms();
-
-  //console.log(findPrograms())
-  //console.log(programs)
-
   return (
     <div>
+    {Object.keys(data.data.programs).map((key, index) => {
+        return (
+          <div key={index}>
+            <h2>
+              {key}
+            </h2>
+
+            <hr />
+          </div>
+        );
+      })}
     </div>
   )
 }
