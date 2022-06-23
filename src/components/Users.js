@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import useSWR from "swr";
 import * as Realm from "realm-web";
 import RealmContext from '../lib/RealmContext';
-import { generateAuthHeader } from '../lib/RealmClient';
 import { isAnon } from "../utils/anon";
 
 const query = `

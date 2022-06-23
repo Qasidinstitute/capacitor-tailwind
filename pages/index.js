@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import * as Realm from 'realm-web';
-import RealmContext from '../lib/RealmContext';
-import Users from "../components/Users";
-import Names from "../components/Names";
+import RealmContext from '../src/lib/RealmContext';
+import Users from "../src/components/Users";
+import Names from "../src/components/Names";
 
 export default function Home() {
   const [client, setClient] = useState( null );
