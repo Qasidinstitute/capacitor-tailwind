@@ -4,7 +4,7 @@ import { Storage } from "@capacitor/storage";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-function saveName() {
+function SaveName() {
   const { data, error } = useSWR(
     "https://randomuser.me/api/?format=json",
     fetcher
@@ -18,7 +18,7 @@ function saveName() {
 }
 
 function Names() {
-  const { names, isLoading, isError } = saveName();
+  const { names, isLoading, isError } = SaveName();
 
   const checkName = async () => {
     const { value } = await Storage.get({ key: "name" });
